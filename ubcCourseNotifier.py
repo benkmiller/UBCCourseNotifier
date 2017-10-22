@@ -1,7 +1,6 @@
 try:
     print("url 1")
-    from urllib.request import HTTPCookieProcessor, build_opener, install_opener, Request, urlopen
-    from urllib.parse import urlencode
+    from urllib.request import urlopen
 except ImportError:
     print("get 3!")
 
@@ -15,7 +14,7 @@ def sendEmail(emailAddress, p):
     server.starttls()
     server.login(emailAddress, p)
 
-    msg = "YOUR MESSAGE!"
+    msg = "There's a seat available in your course!!"
     server.sendmail(emailAddress, emailAddress, msg)
     server.quit()
 
@@ -29,8 +28,9 @@ def check(url):
     restricted = re.search(restrictedSeats, htmlText)
 
     #print ("Total Seats: ", total.group(1))
-    print ("Restricted Seats: ", restricted.group(1))
-    print ("General Seats: ", general.group(1))
+    print("Still looking...")
+    print("Restricted Seats: ", restricted.group(1))
+    print("General Seats: ", general.group(1))
 
     if general:
         if general.group(1) != '0':
@@ -55,6 +55,7 @@ section = input("Enter section number: ")
 year = input("Enter year: ")
 department = input("Enter department(all caps): ")
 emailAddress = input("Enter email address: ")
+restricted = input("Are restricted seats okay?(yes/no)")
 p = getpass.getpass()
 
 totalSeats = re.compile("<td width=&#39;200px&#39;>Total Seats Remaining:</td><td align=&#39;left&#39;><strong>(.*?)</strong></td>")
@@ -72,7 +73,9 @@ while True:
         sendEmail(emailAddress, p)
         break
     if status == 2:
-        print("RESTRICTED DO SOMEHTING")
-        break
+        if restricted == "yes":
+            print("RESTRICTED SEAT AVAILABLE")
+            sendEmail(emailAddress, p)
+            break
     else:
         time.sleep(10)
